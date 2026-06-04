@@ -15,8 +15,7 @@ Thumbs.db
 Desktop.ini
 
 # ── IDE ───────────────────────────────────────────────────
-.vscode/settings.json
-.vscode/launch.json
+.vscode/
 *.swp
 *.swo
 *~
