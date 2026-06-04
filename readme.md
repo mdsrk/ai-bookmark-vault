@@ -219,6 +219,52 @@ PRs welcome! If you find a bug or have an idea:
 
 ---
 
+## 🏗️ Built With
+
+This project is a testament to what happens when you let **two AIs argue about code** while a human drinks coffee.
+
+| Role | Tool | Cost |
+|------|------|------|
+| 🧠 **Architecture & Planning** | [Claude](https://claude.ai) — Designed the DB schema, API routes, auth flow, and file structure | 💵 **$0.00** (Claude is free tier gigachad) |
+| 🤖 **All Development & Debugging** | [DeepSeek V4 Flash Reasoning API](https://deepseek.com) — Wrote every line of JS, HTML, CSS, worker logic, fixed bugs, deployed to Cloudflare | 💰 **$0.50** (yes, fifty cents — total) |
+| 🛠️ **IDE** | VS Code with GitHub Copilot agent mode — continuous fix-and-deploy loop | 🆓 Included |
+| ☁️ **Infrastructure** | Cloudflare Workers + D1 + Pages | 🆓 Free tier |
+
+### ⚔️ The $0.50 War Story
+
+This wasn't a "vibe code and pray" situation. It was a **relentless back-and-forth**:
+
+```
+🔄 Session 1: "Make me a bookmark manager with AI"
+    → DeepSeek generated the full worker, auth, D1 schema, frontend — in one shot
+    → Bug: CORS headers missing → fixed
+    → Bug: JWT verification failing → fixed  
+    → Bug: AI processing not persisting → fixed
+
+🔄 Session 2: "Add AI Sync Now with progress bar"
+    → Built server-side batch processing endpoint
+    → Built real-time polling progress bar on frontend
+    → Deployed ✅
+
+🔄 Session 3: "Fix mobile — search bar is invisible"
+    → Added dedicated mobile search input inside search-view
+    → Synced desktop + mobile search inputs
+    → Responsive CSS fix → deployed ✅
+
+🔄 Session 4: "Push to GitHub with proper readme"
+    → Created .gitignore, wrote full readme with screenshots
+    → git init → add → commit → push
+    → Published to github.com/mdsrk/ai-bookmark-vault ✅
+```
+
+**Total API cost: $0.50.**  
+Total features: Authentication, bookmark CRUD, full-text search, AI search, conversational Q&A, AI auto-titling/summarization/tagging, import/export, bulk AI sync, dark/light theme, responsive mobile layout, Cloudflare deployment.
+
+> *"That's not a budget. That's a typo in the billing dashboard."*  
+> — Someone who's never used DeepSeek API pricing
+
+---
+
 ## 📄 License
 
 MIT — do whatever you want, just don't blame us if your bookmarks become sentient.
