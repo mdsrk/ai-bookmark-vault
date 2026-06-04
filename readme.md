@@ -31,9 +31,7 @@ Imagine if your bookmarks folder had a **PhD in organization**. That's this.
 
 | Dashboard | AI Search | Settings |
 |-----------|-----------|----------|
-| ![Dashboard](https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=250&fit=crop) | ![AI Search](https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=250&fit=crop) | ![Settings](https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=250&fit=crop) |
-
-> *Placeholder images from Unsplash — your actual vault will look way cooler.*
+| ![Dashboard](images/dashboard.PNG) | ![AI Search](images/AI_Search.PNG) | ![Settings](images/settings.PNG) |
 
 ---
 
