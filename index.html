@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vault — Sign In</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- AOS CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Google Fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap');
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+  </style>
+</head>
+<body class="login-page">
+  <div class="login-card" data-aos="fade-up" data-aos-duration="600">
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="logo-text">
+        Vault<span class="logo-dot">.</span>
+      </div>
+      <p class="logo-sub">Your private knowledge vault</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="login-error">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="errorText"></span>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" autocomplete="on">
+      <!-- Email -->
+      <div class="mb-4">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="text"
+          id="email"
+          class="form-input"
+          placeholder="Email or username"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="mb-6">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            style="padding-right: 40px;"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="password-toggle" id="togglePassword" tabindex="-1"
+            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; transition: color 0.2s;">
+            <i class="far fa-eye" id="toggleIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div class="text-right mb-6">
+        <a href="#" class="form-helper" style="text-decoration: none; color: var(--text-muted); transition: color 0.2s;">
+          Forgot password?
+        </a>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="loginBtn" class="btn-primary w-full" style="justify-content: center;">
+        <span id="btnText">Sign In</span>
+        <span id="btnSpinner" class="spinner" style="display: none;"></span>
+      </button>
+    </form>
+  </div>
+
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+
+  <!-- API Base URL -->
+  <script>window.API_BASE = 'https://bookmark-vault-worker.mdshah1994.workers.dev';</script>
+
+  <!-- API Client -->
+  <script src="js/api.js"></script>
+
+  <!-- Auth Module -->
+  <script src="js/auth.js"></script>
+
+  <!-- Auth Script -->
+  <script>
+    // Theme init
+    const savedTheme = localStorage.getItem('vault_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // If already logged in, redirect to dashboard
+    if (localStorage.getItem('vault_token')) {
+      window.location.href = '/dashboard.html';
+    }
+
+    // DOM Elements
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    const toggleBtn = document.getElementById('togglePassword');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    // Password show/hide toggle
+    toggleBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleIcon.className = isPassword ? 'far fa-eye-slash' : 'far fa-eye';
+    });
+
+    // Show error with shake animation
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorMessage.classList.add('visible');
+      const loginCard = document.querySelector('.login-card');
+      loginCard.classList.remove('shake');
+      // Force reflow
+      void loginCard.offsetWidth;
+      loginCard.classList.add('shake');
+    }
+
+    function hideError() {
+      errorMessage.classList.remove('visible');
+      document.querySelector('.login-card').classList.remove('shake');
+    }
+
+    // Set loading state
+    function setLoading(loading) {
+      loginBtn.disabled = loading;
+      btnText.textContent = loading ? 'Signing in...' : 'Sign In';
+      btnSpinner.style.display = loading ? 'inline-block' : 'none';
+    }
+
+    // Form submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      // Validate
+      if (!email || !password) {
+        showError('Please enter both email and password.');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        await login(email, password);
+        window.location.href = '/dashboard.html';
+      } catch (err) {
+        showError(err.message || 'Login failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

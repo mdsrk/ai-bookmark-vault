@@ -1,0 +1,8 @@
+name = "bookmark-vault-worker"
+main = "worker/worker.js"
+compatibility_date = "2025-06-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bookmark-vault"
+database_id = "e97a04fd-2d39-402b-b595-ccf7afbe4bbe"

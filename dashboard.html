@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vault — Dashboard</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- AOS CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- ── Toast Container ──────────────────────────────── -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ── Mobile Overlay ───────────────────────────────── -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- ── Sidebar ──────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <i class="fas fa-bookmark text-[var(--accent)] mr-2"></i>
+      Vault<span style="color: var(--accent);">.</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="dashboard-view">
+        <i class="fas fa-home"></i> Dashboard
+      </button>
+      <button class="nav-item" data-view="favorites-view">
+        <i class="fas fa-star"></i> Favorites
+      </button>
+      <button class="nav-item" data-view="search-view">
+        <i class="fas fa-search"></i> Search
+      </button>
+      <button class="nav-item" data-view="ai-search-view">
+        <i class="fas fa-robot"></i> AI Search
+      </button>
+      <button class="nav-item" data-view="ask-view">
+        <i class="fas fa-comments"></i> Ask My Bookmarks
+      </button>
+      <button class="nav-item" data-view="settings-view">
+        <i class="fas fa-cog"></i> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="theme-toggle-row">
+        <button class="theme-toggle" id="themeToggleBtn" title="Toggle theme">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+      </div>
+      <div class="sidebar-user" id="sidebarUser">user@example.com</div>
+      <button class="btn-logout" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main Area ────────────────────────────────────── -->
+  <main class="main-area">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <button class="hamburger" id="hamburgerBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      <div class="search-bar">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="globalSearch" placeholder="Search bookmarks..." />
+        <span class="kbd-hint">⌘K</span>
+      </div>
+      <button class="btn-primary" id="addBookmarkBtn">
+        <i class="fas fa-plus"></i> Add Bookmark
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- ═══ Dashboard View ═══ -->
+      <div class="view active" id="dashboard-view">
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar">
+          <div class="stat-card">
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Total Bookmarks</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statFavorites">0</div>
+            <div class="stat-label">Favorites</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statProcessed">0</div>
+            <div class="stat-label">AI Processed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-label">Pending AI</div>
+          </div>
+        </div>
+
+        <!-- Bulk Action Bar -->
+        <div class="bulk-action-bar" id="bulkActionBar">
+          <span class="bulk-count"><span id="bulkSelectedCount">0</span> selected</span>
+          <div class="bulk-actions">
+            <button class="btn-secondary" id="selectAllBtn">Select All</button>
+            <button class="btn-danger" id="bulkDeleteBtn"><i class="fas fa-trash"></i> Delete Selected</button>
+          </div>
+        </div>
+
+        <!-- Toolbar: Sort + View Toggle -->
+        <div class="bookmark-toolbar">
+          <div class="toolbar-left">
+            <div class="sort-select-wrapper">
+              <i class="fas fa-sort-amount-down sort-icon"></i>
+              <select class="sort-select" id="sortSelect">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="title">By Title A-Z</option>
+                <option value="recently_updated">Recently Updated</option>
+              </select>
+            </div>
+            <div class="folder-filter-wrapper" id="folderFilterWrapper" style="display:none;">
+              <i class="fas fa-folder folder-filter-icon"></i>
+              <select class="sort-select" id="folderFilterSelect">
+                <option value="">All Folders</option>
+              </select>
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn-icon view-toggle-btn active" id="cardViewBtn" title="Card View">
+              <i class="fas fa-th-large"></i>
+            </button>
+            <button class="btn-icon view-toggle-btn" id="listViewBtn" title="List View">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- View Mode Container -->
+        <div id="bookmarkContainer" class="bookmark-grid" data-view-mode="card"></div>
+
+        <!-- Load More -->
+        <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+          <button class="btn-secondary" id="loadMoreBtn">Load More</button>
+        </div>
+      </div>
+
+      <!-- ═══ Favorites View ═══ -->
+      <div class="view" id="favorites-view">
+        <div class="bookmark-grid" id="favoritesGrid"></div>
+      </div>
+
+      <!-- ═══ Search View ═══ -->
+      <div class="view" id="search-view">
+        <div class="mobile-search-bar" id="mobileSearchBar">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="mobileSearchInput" placeholder="Search bookmarks..." />
+        </div>
+        <div class="mb-4">
+          <p class="search-result-count" id="searchResultCount"></p>
+        </div>
+        <div class="bookmark-grid" id="searchResults"></div>
+      </div>
+
+      <!-- ═══ AI Search View ═══ -->
+      <div class="view" id="ai-search-view">
+        <p class="text-sm text-[var(--text-muted)] mb-6">Search using natural language</p>
+
+        <div class="ai-search-bar">
+          <input type="text" class="ai-search-input" id="aiSearchInput"
+            placeholder="What are you looking for?" />
+          <button class="btn-primary" id="aiSearchBtn">
+            <i class="fas fa-robot"></i> Search
+          </button>
+        </div>
+
+        <!-- AI Not Configured Banner -->
+        <div class="not-configured-banner" id="aiNotConfiguredBanner">
+          <div class="banner-content">
+            <i class="fas fa-exclamation-triangle banner-icon"></i>
+            <span class="banner-text">AI features require an API key. <a href="#" onclick="switchView('settings-view')">Configure in Settings.</a></span>
+          </div>
+        </div>
+
+        <!-- AI Explanation -->
+        <div id="aiExplanation" class="text-sm text-[var(--text-muted)] mb-4" style="display: none;"></div>
+
+        <!-- Loading -->
+        <div id="aiSearchLoading" class="text-center py-8" style="display: none;">
+          <div class="spinner-lg mb-3">
+            <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--accent);"></i>
+          </div>
+          <p class="text-sm text-[var(--text-muted)]">AI is searching your bookmarks...</p>
+        </div>
+
+        <!-- Results -->
+        <div class="bookmark-grid" id="aiSearchResults"></div>
+      </div>
+
+      <!-- ═══ Ask My Bookmarks View ═══ -->
+      <div class="view" id="ask-view">
+        <p class="text-sm text-[var(--text-muted)] mb-4">Ask questions about your saved knowledge</p>
+
+        <div class="not-configured-banner" id="askNotConfiguredBanner">
+          <div class="banner-content">
+            <i class="fas fa-exclamation-triangle banner-icon"></i>
+            <span class="banner-text">AI features require an API key. <a href="#" onclick="switchView('settings-view')">Configure in Settings.</a></span>
+          </div>
+        </div>
+
+        <div class="chat-container">
+          <!-- Chat Messages -->
+          <div class="chat-area" id="chatMessages">
+            <div class="text-center text-[var(--text-muted)] text-sm py-8" id="chatEmpty">
+              <i class="fas fa-comments fa-2x mb-3" style="opacity: 0.3;"></i>
+              <p>Ask a question about your bookmarks to get started.</p>
+            </div>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="chat-input-bar">
+            <input type="text" id="chatInput" placeholder="Ask a question..." />
+            <button class="chat-send-btn" id="chatSendBtn" disabled>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+            <button class="btn-icon" id="chatClearBtn" title="Clear conversation">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Settings View ═══ -->
+      <div class="view" id="settings-view">
+        <!-- Section 1: AI Provider -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">AI Provider</h3>
+          <div class="settings-card">
+            <div class="radio-group mb-4">
+              <label class="radio-option">
+                <input type="radio" name="ai_provider" value="openrouter" checked />
+                <div>
+                  <div class="settings-label">OpenRouter</div>
+                  <div class="settings-desc">Use OpenRouter's API for AI features</div>
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="ai_provider" value="custom" />
+                <div>
+                  <div class="settings-label">Custom OpenAI-Compatible Endpoint</div>
+                  <div class="settings-desc">Use your own API endpoint</div>
+                </div>
+              </label>
+            </div>
+
+            <div id="openrouterFields">
+              <div class="mb-3">
+                <label class="form-label">API Key</label>
+                <input type="password" class="form-input" id="settingsOpenRouterKey" placeholder="sk-or-..." />
+              </div>
+              <div>
+                <label class="form-label">Model Name</label>
+                <input type="text" class="form-input" id="settingsOpenRouterModel" placeholder="openai/gpt-4o-mini" />
+              </div>
+            </div>
+
+            <div id="customFields" style="display: none;">
+              <div class="mb-3">
+                <label class="form-label">Base URL</label>
+                <input type="text" class="form-input" id="settingsCustomUrl" placeholder="https://api.yourendpoint.com/v1" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">API Key</label>
+                <input type="password" class="form-input" id="settingsCustomKey" placeholder="sk-..." />
+              </div>
+              <div>
+                <label class="form-label">Model Name</label>
+                <input type="text" class="form-input" id="settingsCustomModel" placeholder="your-model-name" />
+              </div>
+            </div>
+
+            <button class="btn-secondary mt-4" id="testConnectionBtn">
+              <i class="fas fa-plug"></i> Test Connection
+            </button>
+            <div id="connectionResult" class="mt-2 text-sm" style="display: none;"></div>
+          </div>
+        </div>
+
+        <!-- Section 2: Feature Toggles -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">AI Feature Toggles</h3>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Auto-generate Title</div>
+                <div class="settings-desc">Generate title from URL content</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggleAutoTitle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Auto-generate Summary</div>
+                <div class="settings-desc">Generate 2-3 sentence summary</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggleAutoSummary" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Auto-generate Tags</div>
+                <div class="settings-desc">Generate relevant tags</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggleAutoTags" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">AI Search</div>
+                <div class="settings-desc">Enable natural language AI search</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggleAiSearch" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Ask My Bookmarks</div>
+                <div class="settings-desc">Enable conversational Q&A</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggleAskBookmarks" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Folders Management -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">Folders</h3>
+          <div class="settings-card">
+            <div class="flex gap-2 mb-3">
+              <input type="text" class="form-input flex-1" id="newFolderInput" placeholder="Folder name..." />
+              <button class="btn-primary" id="createFolderBtn"><i class="fas fa-plus"></i> Create</button>
+            </div>
+            <div id="folderListSettings"></div>
+          </div>
+        </div>
+
+        <!-- Section 4: Account -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">Account</h3>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Email</div>
+                <div class="settings-desc" id="settingsEmail">user@example.com</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: AI Sync -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">AI Sync</h3>
+          <div class="settings-card">
+            <p class="text-sm text-[var(--text-muted)] mb-3">
+              Process all bookmarks that are pending or have failed AI processing.
+              Bookmarks are sent to the AI provider in chunks to generate titles, summaries, and tags.
+            </p>
+            <div class="flex gap-3 mb-3" style="flex-wrap:wrap;">
+              <button class="btn-primary" id="aiSyncNowBtn">
+                <i class="fas fa-sync"></i> AI Sync Now
+              </button>
+            </div>
+            <!-- Progress Bar -->
+            <div id="aiSyncProgressContainer" style="display: none;">
+              <div class="progress-bar-wrapper">
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" id="aiSyncProgressFill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-bar-label" id="aiSyncProgressLabel">0 / 0</div>
+              </div>
+              <div class="progress-status" id="aiSyncStatus">Starting...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Data -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">Data</h3>
+          <div class="settings-card flex gap-3" style="flex-wrap:wrap;">
+            <button class="btn-secondary" id="exportJsonBtn">
+              <i class="fas fa-download"></i> Export JSON
+            </button>
+            <button class="btn-secondary" id="exportCsvBtn">
+              <i class="fas fa-file-csv"></i> Export CSV
+            </button>
+            <button class="btn-secondary" id="importBookmarksBtn" style="border-color: rgba(99,102,241,0.4); color: var(--accent);">
+              <i class="fas fa-file-import"></i> Import Bookmarks
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </main>
+
+  <!-- ── Add Bookmark Modal ────────────────────────────── -->
+  <div class="modal-overlay" id="addBookmarkModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Add Bookmark</h2>
+        <button class="modal-close" id="closeModalBtn">&times;</button>
+      </div>
+      <form id="addBookmarkForm">
+        <div class="mb-4">
+          <label class="form-label">URL <span style="color: var(--danger);">*</span></label>
+          <input type="text" class="form-input" id="bookmarkUrl" placeholder="example.com/article (https:// is added automatically)" required />
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" id="bookmarkNotes" rows="3"
+            placeholder="Why are you saving this? What will you use it for?"></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Folder</label>
+          <select class="form-input" id="bookmarkFolder">
+            <option value="">No Folder</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary w-full" id="saveBookmarkBtn">
+          <i class="fas fa-save"></i> Save Bookmark
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Import Bookmarks Modal ───────────────────────── -->
+  <div class="modal-overlay" id="importBookmarksModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Import Bookmarks</h2>
+        <button class="modal-close" id="closeImportModalBtn">&times;</button>
+      </div>
+      <div class="mb-4">
+        <p style="font-size:14px;color:var(--text-secondary);font-family:var(--font-body);margin-bottom:12px;">
+          Export your bookmarks from Chrome or Firefox as an HTML file, then upload it here.
+        </p>
+        <ul style="font-size:13px;color:var(--text-muted);font-family:var(--font-body);list-style:disc;padding-left:20px;margin-bottom:16px;line-height:1.8;">
+          <li><strong>Chrome:</strong> Bookmarks → Bookmark Manager → Organize → Export bookmarks</li>
+          <li><strong>Firefox:</strong> Library → Bookmarks → Import and Backup → Export Bookmarks to HTML</li>
+        </ul>
+        <div style="margin-bottom:12px;">
+          <label class="form-label">Target Folder (optional)</label>
+          <select class="form-input" id="importFolderSelect">
+            <option value="">No Folder</option>
+          </select>
+        </div>
+        <div style="border:2px dashed var(--border-medium);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;"
+             id="importDropZone"
+             ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='var(--accent-glow)'"
+             ondragleave="this.style.borderColor='var(--border-medium)';this.style.background='transparent'">
+          <i class="fas fa-cloud-upload-alt" style="font-size:32px;color:var(--text-muted);margin-bottom:8px;display:block;"></i>
+          <p style="font-size:14px;color:var(--text-secondary);font-family:var(--font-body);">Drop your bookmarks HTML file here</p>
+          <p style="font-size:12px;color:var(--text-muted);font-family:var(--font-body);margin-top:4px;">or click to browse</p>
+          <input type="file" id="importFileInput" accept=".html,.htm" style="display:none;" />
+        </div>
+        <div id="importPreview" style="display:none;margin-top:12px;">
+          <div style="font-size:13px;color:var(--text-secondary);font-family:var(--font-body);">
+            <i class="fas fa-file"></i> <span id="importFileName"></span>
+            — <span id="importCount">0</span> bookmarks found
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="cancelImportBtn">Cancel</button>
+        <button class="btn-primary" id="startImportBtn" disabled>
+          <i class="fas fa-file-import"></i> Import
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Edit Bookmark Modal ───────────────────────────── -->
+  <div class="modal-overlay" id="editBookmarkModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Bookmark</h2>
+        <button class="modal-close" id="closeEditModalBtn">&times;</button>
+      </div>
+      <form id="editBookmarkForm">
+        <input type="hidden" id="editBookmarkId" />
+        <div class="mb-3">
+          <label class="form-label">URL</label>
+          <input type="text" class="form-input" id="editBookmarkUrl" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-input" id="editBookmarkTitle" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Summary</label>
+          <textarea class="form-input" id="editBookmarkSummary" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tags (comma-separated)</label>
+          <input type="text" class="form-input" id="editBookmarkTags" placeholder="tag1, tag2, tag3" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" id="editBookmarkNotes" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Folder</label>
+          <select class="form-input" id="editBookmarkFolder"></select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancelEditBtn">Cancel</button>
+          <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Scripts ───────────────────────────────────────── -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+
+  <!-- API Base URL -->
+  <script>window.API_BASE = 'https://bookmark-vault-worker.mdshah1994.workers.dev';</script>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/bookmarks.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/ai-search.js"></script>
+  <script src="js/ask-bookmarks.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/import-export.js"></script>
+  <script src="js/dashboard-init.js"></script>
+</body>
+</html>
