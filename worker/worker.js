@@ -3,7 +3,15 @@
 // Single-file backend: auth, bookmarks, search, AI, settings
 // ============================================================
 
-// ─── CORS Headers ──────────────────────────────────────────
+// ─── Security & CORS Headers ───────────────────────────────
+const SECURITY_HEADERS = {
+  'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet',
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'no-referrer',
+  'Permissions-Policy': 'geolocation=(), camera=(), microphone=()',
+};
+
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -13,7 +21,7 @@ const CORS_HEADERS = {
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+    headers: { ...CORS_HEADERS, ...SECURITY_HEADERS, 'Content-Type': 'application/json' },
   });
 }
 
@@ -351,7 +359,7 @@ async function handleRequest(request, env) {
 
   // CORS preflight
   if (method === 'OPTIONS') {
-    return new Response(null, { headers: CORS_HEADERS });
+    return new Response(null, { headers: { ...CORS_HEADERS, ...SECURITY_HEADERS } });
   }
 
   // Initialize DB on first request
@@ -1071,6 +1079,7 @@ async function handleRequest(request, env) {
     return new Response(JSON.stringify({ bookmarks: results }, null, 2), {
       headers: {
         ...CORS_HEADERS,
+        ...SECURITY_HEADERS,
         'Content-Type': 'application/json',
         'Content-Disposition': 'attachment; filename="bookmarks-export.json"',
       },
@@ -1102,6 +1111,7 @@ async function handleRequest(request, env) {
     return new Response(csvLines.join('\n'), {
       headers: {
         ...CORS_HEADERS,
+        ...SECURITY_HEADERS,
         'Content-Type': 'text/csv',
         'Content-Disposition': 'attachment; filename="bookmarks-export.csv"',
       },
@@ -1121,9 +1131,23 @@ export default {
     // Run AI retry check in background on every request
     ctx.waitUntil(retryFailedBookmarks(env));
     
-    return handleRequest(request, env).catch(err => {
+    const response = await handleRequest(request, env).catch(err => {
       console.error('Unhandled error:', err);
       return error('Internal server error', 'INTERNAL_ERROR', 500);
+    });
+
+    // Attach security headers to all responses
+    const newHeaders = new Headers(response.headers);
+    for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+      if (!newHeaders.has(key)) {
+        newHeaders.set(key, value);
+      }
+    }
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders,
     });
   },
 };
