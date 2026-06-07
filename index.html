@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, nosnippet, noarchive" />
-  <title>Login</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23666'/%3E%3C/svg%3E" />
+  <title>welcome!! :)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23999'/%3E%3C/svg%3E" />
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: #e8e8e8;
+      background: #aaf0ff;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -18,61 +18,75 @@
       padding: 16px;
     }
     .box {
-      background: #f0f0f0;
-      border: 1px solid #ccc;
-      padding: 24px;
+      background: #ff0;
+      border: 4px dashed #f0f;
+      padding: 30px 20px 20px 20px;
       width: 100%;
-      max-width: 340px;
+      max-width: 320px;
+      box-shadow: 8px 8px 0 #000;
     }
     h1 {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-      margin: 0 0 20px 0;
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 28px;
+      color: #f00;
       text-align: center;
+      margin: 0 0 5px 0;
+      text-shadow: 2px 2px 0 #ff0;
+      transform: rotate(-2deg);
+    }
+    .sub {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
     }
     label {
-      font-size: 13px;
-      color: #555;
+      font-size: 14px;
+      color: #000;
+      font-weight: bold;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     input {
       width: 100%;
-      padding: 8px 10px;
+      padding: 10px;
       font-size: 14px;
-      border: 1px solid #bbb;
+      font-family: 'Comic Sans MS', cursive;
+      border: 3px solid #00f;
       background: #fff;
-      color: #333;
+      color: #000;
       box-sizing: border-box;
       margin-bottom: 14px;
-      border-radius: 0;
     }
     input:focus {
-      outline: none;
-      border-color: #888;
+      outline: 4px solid #0f0;
+      border-color: #00f;
     }
     button {
       width: 100%;
-      padding: 9px;
-      font-size: 14px;
-      background: #888;
-      color: #fff;
-      border: none;
+      padding: 12px;
+      font-size: 18px;
+      font-family: 'Comic Sans MS', cursive;
+      font-weight: bold;
+      background: #0f0;
+      color: #000;
+      border: 3px solid #000;
       cursor: pointer;
+      box-shadow: 4px 4px 0 #000;
     }
-    button:hover {
-      background: #777;
+    button:active {
+      box-shadow: none;
+      transform: translate(4px, 4px);
     }
     button:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
     }
     .error {
-      background: #fdd;
-      border: 1px solid #d88;
-      color: #a33;
+      background: #fff;
+      border: 3px solid #f00;
+      color: #f00;
       font-size: 13px;
+      font-weight: bold;
       padding: 8px 10px;
       margin-bottom: 14px;
       display: none;
@@ -80,22 +94,12 @@
     .error.visible {
       display: block;
     }
-    hr {
-      border: none;
-      border-top: 1px solid #ccc;
-      margin: 16px 0;
-    }
-    .footer {
-      font-size: 11px;
-      color: #999;
-      text-align: center;
-    }
     .spinner {
       display: inline-block;
       width: 14px;
       height: 14px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
+      border: 3px solid #000;
+      border-top-color: #0f0;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
       vertical-align: middle;
@@ -105,27 +109,25 @@
 </head>
 <body>
   <div class="box">
-    <h1>Authentication Required</h1>
+    <h1>✦ WELCOME ✦</h1>
+    <div class="sub">plz login to see my page!!</div>
 
     <div id="errorMessage" class="error">
       <span id="errorText"></span>
     </div>
 
     <form id="loginForm">
-      <label for="email">Username</label>
-      <input type="text" id="email" placeholder="Username" autocomplete="username" required />
+      <label for="email">ur name:</label>
+      <input type="text" id="email" placeholder="type here..." autocomplete="username" required />
 
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Password" autocomplete="current-password" required />
+      <label for="password">secret code:</label>
+      <input type="password" id="password" placeholder="shhh..." autocomplete="current-password" required />
 
       <button type="submit" id="loginBtn">
-        <span id="btnText">Sign in</span>
+        <span id="btnText">LOGIN!!</span>
         <span id="btnSpinner" class="spinner" style="display:none"></span>
       </button>
     </form>
-
-    <hr />
-    <div class="footer">Server v2.3.1</div>
   </div>
 
   <script>
@@ -164,22 +166,22 @@
       const p = password.value;
 
       if (!u || !p) {
-        showError('Please enter both fields.');
+        showError('hey!! fill both thingys plz');
         return;
       }
 
       btn.disabled = true;
-      btnText.textContent = 'Signing in...';
+      btnText.textContent = 'loading...';
       btnSpinner.style.display = 'inline-block';
 
       try {
         await login(u, p);
         window.location.href = '/dashboard.html';
       } catch (err) {
-        showError(err.message || 'Invalid credentials.');
+        showError('oopz!! wrong name or code. try again :p');
       } finally {
         btn.disabled = false;
-        btnText.textContent = 'Sign in';
+        btnText.textContent = 'LOGIN!!';
         btnSpinner.style.display = 'none';
       }
     });
