@@ -140,7 +140,7 @@ body, .sidebar, .top-bar, .bookmark-card,
 .tag-pill,
 .form-input, .ai-search-input, .chat-message,
 .settings-row, .radio-option, .search-highlight,
-.kbd-hint, .empty-state, .login-card {
+.kbd-hint, .empty-state {
   transition: background-color var(--transition-slow),
               color var(--transition-slow),
               border-color var(--transition-slow),
@@ -1744,72 +1744,6 @@ textarea.form-input {
   .content-area {
     padding: 24px 32px;
   }
-}
-
-/* ═══════════════════════════════════════════════════════
-   LOGIN PAGE
-   ═══════════════════════════════════════════════════════ */
-.login-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 16px;
-}
-
-.login-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  padding: 40px;
-  width: 100%;
-  max-width: 420px;
-  transition: border-color var(--transition-slow);
-  box-shadow: var(--card-shadow);
-}
-
-.login-card:focus-within {
-  border-color: var(--accent);
-}
-
-.login-logo {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.login-logo .logo-text {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 32px;
-  color: var(--text-primary);
-}
-
-.login-logo .logo-dot {
-  color: var(--accent);
-}
-
-.login-logo .logo-sub {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-top: 8px;
-}
-
-.login-error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: var(--danger);
-  font-size: 14px;
-  display: none;
-  margin-bottom: 16px;
-}
-
-.login-error.visible {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 /* ═══════════════════════════════════════════════════════
