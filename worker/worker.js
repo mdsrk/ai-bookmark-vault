@@ -216,7 +216,7 @@ async function callLLM(env, userId, messages) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${api_key}`,
-      ...(provider === 'openrouter' ? { 'HTTP-Referer': 'https://bookmark-vault.pages.dev' } : {}),
+      ...(provider === 'openrouter' ? { 'HTTP-Referer': 'https://main.bookmark-vault-a64.pages.dev' } : {}),
     },
     body: JSON.stringify({
       model,
