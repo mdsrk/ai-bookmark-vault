@@ -362,6 +362,16 @@ async function handleRequest(request, env) {
     return new Response(null, { headers: { ...CORS_HEADERS, ...SECURITY_HEADERS } });
   }
 
+  // Serve robots.txt
+  if (path === '/robots.txt') {
+    return new Response('User-agent: *\nDisallow: /\n', {
+      headers: {
+        'Content-Type': 'text/plain',
+        ...SECURITY_HEADERS,
+      },
+    });
+  }
+
   // Initialize DB on first request
   await initDB(env);
 
